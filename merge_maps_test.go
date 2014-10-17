@@ -1,9 +1,27 @@
 package merge_maps
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
+
+func ExampleMerge() {
+	m := map[string]int{}
+	m1 := map[string]int{"foo": 0}
+	m2 := map[string]int{"bar": 1, "baz": 2}
+
+	Merge(m, m1, 0)
+	Merge(m, m2, 0)
+
+	for k, v := range m {
+		fmt.Printf("%v: %v\n", k, v)
+	}
+	// Output:
+	// foo: 0
+	// bar: 1
+	// baz: 2
+}
 
 func TestMerge(t *testing.T) {
 	testCases := []struct {

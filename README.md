@@ -12,11 +12,16 @@ Example
 package main
 
 import (
-	// "github.com/VojtechVitek/go-merge-maps"
+    "github.com/VojtechVitek/go-merge-maps"
 )
 
 func main() {
-	// TODO
+    m := map[string]int{}
+    m1 := map[string]int{"foo": 0}
+    m2 := map[string]int{"bar": 1, "baz": 2}
+
+    Merge(m, m1, 0)
+    Merge(m, m2, 0)
 }
 ```
 
