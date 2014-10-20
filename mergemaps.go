@@ -1,4 +1,4 @@
-package merge_maps
+package mergemaps
 
 import (
 	"fmt"

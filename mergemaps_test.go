@@ -1,9 +1,11 @@
-package merge_maps
+package mergemaps_test
 
 import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/VojtechVitek/mergemaps"
 )
 
 func ExampleMerge() {
@@ -11,8 +13,8 @@ func ExampleMerge() {
 	m1 := map[string]int{"foo": 0}
 	m2 := map[string]int{"bar": 1, "baz": 2}
 
-	Merge(m, m1, 0)
-	Merge(m, m2, 0)
+	mergemaps.Merge(m, m1, 0)
+	mergemaps.Merge(m, m2, 0)
 
 	for k, v := range m {
 		fmt.Printf("%v: %v\n", k, v)
@@ -55,37 +57,37 @@ func TestMerge(t *testing.T) {
 		{ // Test dst + src => expected, overwrite dst
 			map[string]string{"foo": "bar"},
 			map[string]string{"foo": ""},
-			OverwriteExistingDstKey,
+			mergemaps.OverwriteExistingDstKey,
 			true,
 			map[string]string{"foo": ""},
 		},
 		{ // Test dst + src => expected, error on existing key value
 			map[string]string{"foo": "bar"},
 			map[string]string{"foo": "bar"},
-			ErrorOnExistingDstKey | OverwriteExistingDstKey,
+			mergemaps.ErrorOnExistingDstKey | mergemaps.OverwriteExistingDstKey,
 			false,
 			map[string]string{"foo": "bar"},
 		},
 		{ // Test dst + src => expected, do not error on same key value
 			map[string]string{"foo": "bar"},
 			map[string]string{"foo": "bar"},
-			ErrorOnDifferentDstKeyValue | OverwriteExistingDstKey,
+			mergemaps.ErrorOnDifferentDstKeyValue | mergemaps.OverwriteExistingDstKey,
 			true,
 			map[string]string{"foo": "bar"},
 		},
 		{ // Test dst + src => expected, error on different key value
 			map[string]string{"foo": "bar"},
 			map[string]string{"foo": ""},
-			ErrorOnDifferentDstKeyValue | OverwriteExistingDstKey,
+			mergemaps.ErrorOnDifferentDstKeyValue | mergemaps.OverwriteExistingDstKey,
 			false,
 			map[string]string{"foo": "bar"},
 		},
 	}
 
 	for i, test := range testCases {
-		err := Merge(test.dst, test.src, test.flags)
+		err := mergemaps.Merge(test.dst, test.src, test.flags)
 		if err != nil && test.shouldPass {
-			t.Errorf("Unexpected error while merging maps on testCase[%v].", i)
+			t.Errorf("Unexpected error while merging § on testCase[%v].", i)
 		}
 		if err == nil && !test.shouldPass {
 			t.Errorf("Unexpected non-error while merging maps on testCase[%v].", i)
