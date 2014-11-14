@@ -12,7 +12,7 @@ const (
 	ErrorOnDifferentDstKeyValue = 1 << iota
 )
 
-// Merge merges items from a src map into a dst map.
+// MergeInto merges items from a src map into a dst map.
 // Returns an error when the maps are not of the same type.
 // Flags:
 // - ErrorOnExistingDstKey
@@ -22,7 +22,7 @@ const (
 //               to a different value than src key.
 // - OverwriteDstKey
 //     When set: Overwrite existing dst key value with src key value.
-func Merge(dst, src interface{}, flags int) error {
+func MergeInto(dst, src interface{}, flags int) error {
 	dstVal := reflect.ValueOf(dst)
 	srcVal := reflect.ValueOf(src)
 

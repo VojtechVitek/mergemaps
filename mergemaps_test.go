@@ -7,7 +7,7 @@ import (
 	"github.com/VojtechVitek/mergemaps"
 )
 
-func TestMerge(t *testing.T) {
+func TestMergeInto(t *testing.T) {
 	testCases := []struct {
 		dst      interface{}
 		src      interface{}
