@@ -69,7 +69,7 @@ func TestMergeInto(t *testing.T) {
 	for i, test := range testCases {
 		err := mergemaps.MergeInto(test.dst, test.src, test.flags)
 		if err != nil && !test.err {
-			t.Errorf("Unexpected error while merging § on testCase[%v].", i)
+			t.Errorf("Unexpected error while merging maps on testCase[%v].", i)
 		}
 		if err == nil && test.err {
 			t.Errorf("Unexpected non-error while merging maps on testCase[%v].", i)
