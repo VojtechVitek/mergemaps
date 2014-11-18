@@ -26,16 +26,14 @@ func MergeInto(dst, src interface{}, flags int) error {
 	dstVal := reflect.ValueOf(dst)
 	srcVal := reflect.ValueOf(src)
 
-	if dstVal.Kind() == reflect.Interface || dstVal.Kind() == reflect.Ptr {
-		dstVal = dstVal.Elem()
-	}
-	if srcVal.Kind() == reflect.Interface || srcVal.Kind() == reflect.Ptr {
-		srcVal = srcVal.Elem()
-	}
-
 	if !dstVal.IsValid() {
 		return fmt.Errorf("Dst is not a valid value")
 	}
+	if !srcVal.IsValid() || srcVal.IsNil() {
+		// Nothing to merge
+		return nil
+	}
+
 	if dstVal.Kind() != reflect.Map {
 		return fmt.Errorf("Dst is not a map")
 	}

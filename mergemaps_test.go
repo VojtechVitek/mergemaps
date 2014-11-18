@@ -15,6 +15,20 @@ func TestMergeInto(t *testing.T) {
 		err      bool
 		expected interface{}
 	}{
+		{ // Can't assign to nil
+			dst:      nil,
+			src:      nil,
+			flags:    0,
+			err:      true,
+			expected: nil,
+		},
+		{ // Merge nil into an empty map
+			dst:      map[int]int{},
+			src:      nil,
+			flags:    0,
+			err:      false,
+			expected: map[int]int{},
+		},
 		{ // Test empty maps
 			dst:      map[int]int{},
 			src:      map[int]int{},
@@ -69,7 +83,7 @@ func TestMergeInto(t *testing.T) {
 	for i, test := range testCases {
 		err := mergemaps.MergeInto(test.dst, test.src, test.flags)
 		if err != nil && !test.err {
-			t.Errorf("Unexpected error while merging maps on testCase[%v].", i)
+			t.Errorf("Unexpected error while merging maps on testCase[%v]: %v.", i, err)
 		}
 		if err == nil && test.err {
 			t.Errorf("Unexpected non-error while merging maps on testCase[%v].", i)
