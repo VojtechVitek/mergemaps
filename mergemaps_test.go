@@ -8,6 +8,8 @@ import (
 )
 
 func TestMergeInto(t *testing.T) {
+	var nilMap map[int]int
+
 	testCases := []struct {
 		dst      interface{}
 		src      interface{}
@@ -15,9 +17,9 @@ func TestMergeInto(t *testing.T) {
 		err      bool
 		expected interface{}
 	}{
-		{ // Can't assign to nil
+		{ // Can't merge into nil
 			dst:      nil,
-			src:      nil,
+			src:      map[int]int{},
 			flags:    0,
 			err:      true,
 			expected: nil,
@@ -29,6 +31,20 @@ func TestMergeInto(t *testing.T) {
 			err:      false,
 			expected: map[int]int{},
 		},
+		{ // Can't merge into nil map
+			dst:      nilMap,
+			src:      map[int]int{},
+			flags:    0,
+			err:      true,
+			expected: nilMap,
+		},
+		{ // Can't merge into pointer
+			dst:      &nilMap,
+			src:      map[int]int{},
+			flags:    0,
+			err:      true,
+			expected: &nilMap,
+		},
 		{ // Test empty maps
 			dst:      map[int]int{},
 			src:      map[int]int{},
@@ -37,11 +53,11 @@ func TestMergeInto(t *testing.T) {
 			expected: map[int]int{},
 		},
 		{ // Test dst + src => expected
-			dst:      map[int]string{1: "foo"},
-			src:      map[int]string{2: "bar"},
+			dst:      map[int]byte{0: 0, 1: 1},
+			src:      map[int]byte{2: 2, 3: 3},
 			flags:    0,
 			err:      false,
-			expected: map[int]string{1: "foo", 2: "bar"},
+			expected: map[int]byte{0: 0, 1: 1, 2: 2, 3: 3},
 		},
 		{ // Test dst + src => expected, do not overwrite dst
 			dst:      map[string]string{"foo": "bar"},
@@ -88,8 +104,10 @@ func TestMergeInto(t *testing.T) {
 		if err == nil && test.err {
 			t.Errorf("Unexpected non-error while merging maps on testCase[%v].", i)
 		}
+
 		if !reflect.DeepEqual(test.dst, test.expected) {
-			t.Errorf("Unexpected map on testCase[%v]. Expected: %v, got: %v.", i, test.expected, test.dst)
+			t.Errorf("Unexpected map on testCase[%v]. Expected: %#v, got: %#v.", i, test.expected, test.dst)
 		}
+
 	}
 }

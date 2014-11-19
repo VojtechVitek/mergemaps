@@ -29,13 +29,13 @@ func MergeInto(dst, src interface{}, flags int) error {
 	if !dstVal.IsValid() {
 		return fmt.Errorf("Dst is not a valid value")
 	}
+	if dstVal.Kind() != reflect.Map {
+		return fmt.Errorf("Dst is not a map")
+	}
+
 	if !srcVal.IsValid() || srcVal.IsNil() {
 		// Nothing to merge
 		return nil
-	}
-
-	if dstVal.Kind() != reflect.Map {
-		return fmt.Errorf("Dst is not a map")
 	}
 
 	dstTyp := dstVal.Type()
@@ -45,10 +45,7 @@ func MergeInto(dst, src interface{}, flags int) error {
 	}
 
 	if dstVal.IsNil() {
-		if !dstVal.CanSet() {
-			return fmt.Errorf("Dst value is (not addressable) nil, pass a pointer instead")
-		}
-		dstVal.Set(reflect.MakeMap(dstTyp))
+		return fmt.Errorf("Dst value is nil")
 	}
 
 	for _, k := range srcVal.MapKeys() {
