@@ -30,7 +30,7 @@ func MergeInto(dst, src interface{}, flags int) error {
 		return fmt.Errorf("Dst is not a valid value")
 	}
 	if dstVal.Kind() != reflect.Map {
-		return fmt.Errorf("Dst is not a map")
+		return fmt.Errorf("Dst is not a map: %v", dstVal.Kind())
 	}
 
 	if !srcVal.IsValid() || srcVal.IsNil() {
