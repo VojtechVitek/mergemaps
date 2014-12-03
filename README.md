@@ -10,8 +10,6 @@ This pkg was merged into [OpenShift 3](https://github.com/openshift/origin) [uti
 Example
 -------
 
-See [more examples](examples/examples.go).
-
 ```
 package main
 
@@ -33,6 +31,18 @@ func main() {
     fmt.Printf("%#v\n", dst)
 }
 ```
+
+See [more examples](examples/examples.go).
+
+Flags
+-----
+
+- ErrorOnExistingDstKey
+    When set: Return an error if any of the dst keys is already set.
+- ErrorOnDifferentDstKeyValue
+    When set: Return an error if any of the dst keys is already set to a different value than src key.
+- OverwriteDstKey
+    When set: Overwrite existing dst key value with src key value.
 
 License
 -------
