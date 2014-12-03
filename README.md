@@ -1,28 +1,36 @@
 Go MergeMaps - Merge two maps
 -----------------------------
-This [Go (Golang)](http://golang.org/) package provides functions to merge two maps using reflection.
+This [Go (Golang)](http://golang.org/) package provides functions to merge two maps using [reflection](http://golang.org/pkg/reflect/).
 
 [![GoDoc](https://godoc.org/github.com/VojtechVitek/mergemaps?status.png)](https://godoc.org/github.com/VojtechVitek/mergemaps)
 [![Travis](https://travis-ci.org/VojtechVitek/mergemaps.svg?branch=master)](https://travis-ci.org/VojtechVitek/mergemaps)
 
+This pkg was merged into [OpenShift 3](https://github.com/openshift/origin) [util pkg](https://github.com/openshift/origin/blob/master/pkg/util/mergemap.go).
+
 Example
 -------
+
+See [more examples](examples/examples.go).
 
 ```
 package main
 
 import (
-    "github.com/VojtechVitek/mergemaps"
+    map "github.com/VojtechVitek/mergemaps"
 )
 
 func main() {
-    var m map[string]int
+    dst := map[string]string{"foo": "bar"}
+    src := map[string]string{"baz": ""}
 
-    m1 := map[string]int{"foo": 0}
-    m2 := map[string]int{"bar": 1, "baz": 2}
+    // Merge src map into dst map
+    err := mergemaps.MergeInto(dst, src, 0 /*flags*/)
+    if err != nil {
+        fmt.Errorf("Can't merge src into dst: %v", err)
+    }
 
-    mergemaps.Merge(m, m1, 0)
-    mergemaps.Merge(m, m2, 0)
+    // Prints map[string]string{"baz":"", "foo":"bar"}
+    fmt.Printf("%#v\n", dst)
 }
 ```
 

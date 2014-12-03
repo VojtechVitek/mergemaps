@@ -5,11 +5,11 @@ import (
 	"reflect"
 )
 
-// Merge flags
+// MergeInto flags
 const (
-	OverwriteExistingDstKey     = 1 << iota
-	ErrorOnExistingDstKey       = 1 << iota
-	ErrorOnDifferentDstKeyValue = 1 << iota
+	OverwriteExistingDstKey = 1 << iota
+	ErrorOnExistingDstKey
+	ErrorOnDifferentDstKeyValue
 )
 
 // MergeInto merges items from a src map into a dst map.
@@ -26,36 +26,32 @@ func MergeInto(dst, src interface{}, flags int) error {
 	dstVal := reflect.ValueOf(dst)
 	srcVal := reflect.ValueOf(src)
 
-	if !dstVal.IsValid() {
-		return fmt.Errorf("Dst is not a valid value")
-	}
 	if dstVal.Kind() != reflect.Map {
-		return fmt.Errorf("Dst is not a map: %v", dstVal.Kind())
+		return fmt.Errorf("dst is not a valid map: %v", dstVal.Kind())
 	}
-
-	if !srcVal.IsValid() || srcVal.IsNil() {
-		// Nothing to merge
-		return nil
+	if srcVal.Kind() != reflect.Map {
+		return fmt.Errorf("src is not a valid map: %v", srcVal.Kind())
 	}
-
-	dstTyp := dstVal.Type()
-	srcTyp := srcVal.Type()
-	if !dstTyp.AssignableTo(srcTyp) {
-		return fmt.Errorf("Type mismatch, can't assign '%v' to '%v'", srcTyp, dstTyp)
+	if dstTyp, srcTyp := dstVal.Type(), srcVal.Type(); !dstTyp.AssignableTo(srcTyp) {
+		return fmt.Errorf("type mismatch, can't assign '%v' to '%v'", srcTyp, dstTyp)
 	}
 
 	if dstVal.IsNil() {
-		return fmt.Errorf("Dst value is nil")
+		return fmt.Errorf("dst value is nil")
+	}
+	if srcVal.IsNil() {
+		// Nothing to merge
+		return nil
 	}
 
 	for _, k := range srcVal.MapKeys() {
 		if dstVal.MapIndex(k).IsValid() {
 			if flags&ErrorOnExistingDstKey != 0 {
-				return fmt.Errorf("ErrorOnExistingDstKey flag: Dst key already set to a different value, '%v'='%v'", k, dstVal.MapIndex(k))
+				return fmt.Errorf("dst key already set (ErrorOnExistingDstKey=1), '%v'='%v'", k, dstVal.MapIndex(k))
 			}
 			if dstVal.MapIndex(k).String() != srcVal.MapIndex(k).String() {
 				if flags&ErrorOnDifferentDstKeyValue != 0 {
-					return fmt.Errorf("ErrorOnDifferentDstKeyValue flag: Dst key already set to a different value, '%v'='%v'", k, dstVal.MapIndex(k))
+					return fmt.Errorf("dst key already set to a different value (ErrorOnDifferentDstKeyValue=1), '%v'='%v'", k, dstVal.MapIndex(k))
 				}
 				if flags&OverwriteExistingDstKey != 0 {
 					dstVal.SetMapIndex(k, srcVal.MapIndex(k))
